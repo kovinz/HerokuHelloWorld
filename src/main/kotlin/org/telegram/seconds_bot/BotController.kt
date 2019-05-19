@@ -22,7 +22,7 @@ class BotController {
     @Value("\${token}")
     lateinit var token: String
 
-    @PostMapping("/\${token}")
+    @PostMapping("/")
     fun onUpdate(@RequestBody update: Update) {
         logger.log(Level.INFO, "Got update: " + update)
         if (update.message != null) {
