@@ -53,11 +53,26 @@ class BotController {
 
     private fun onWaitCommand(chatId: Long, text: String) = try {
         val textWithoutCommand = text.subSequence(WAIT_COMMAND.length, text.length).trim().toString()
-        val digits = textWithoutCommand.filter { c: Char -> c.isDigit() }
-        val quantity = digits.toLong()
-        sleep(quantity)
-        val response = "I've been waiting for " + digits + "seconds!"
-        sendMessage(chatId, response)
+        if (textWithoutCommand.all { c: Char -> c.isDigit().or(c.equals(":")) }.and(textWithoutCommand.isNotEmpty())){
+            val listOfTimes: List<Long> = text.split(":").map { s: String -> s.toLong() }
+            val secondsToWait: Long = 0
+            if (listOfTimes.size == 3) {
+                secondsToWait.plus(listOfTimes.get(0)) * 3600 * 1000
+                secondsToWait.plus(listOfTimes.get(1)) * 60 * 1000
+                secondsToWait.plus(listOfTimes.get(2)) * 1000
+            } else if (listOfTimes.size == 2){
+                secondsToWait.plus(listOfTimes.get(0)) * 60 * 1000
+                secondsToWait.plus(listOfTimes.get(1)) * 1000
+            } else {
+                secondsToWait.plus(listOfTimes.get(0)) * 1000
+            }
+            sleep(secondsToWait)
+            val response = "I've been waiting for " + secondsToWait + " seconds!"
+            sendMessage(chatId, response)
+        } else {
+            val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
+            sendMessage(chatId, response)
+        }
     } catch (e: UnirestException) {
         logger.log(Level.SEVERE, "Can not wait!", e)
     }
