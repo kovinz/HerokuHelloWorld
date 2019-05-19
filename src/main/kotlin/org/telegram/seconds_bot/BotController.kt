@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import java.lang.Thread.sleep
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -16,6 +17,7 @@ class BotController {
         private val API_ENDPOINT = "https://api.telegram.org/bot"
         private val START_COMMAND = "/start"
         private val ECHO_COMMAND = "/echo"
+        private val WAIT_COMMAND = "/wait"
     }
 
     private val logger: Logger = Logger.getLogger("[EchoBot]")
@@ -27,8 +29,9 @@ class BotController {
         logger.log(Level.INFO, "Got update: " + update)
         if (update.message != null) {
             val chatId = update.message.chat.id
-            val text = update.message.text
+            val text= update.message.text
             when {
+                text?.startsWith(WAIT_COMMAND) == true -> onWaitCommand(chatId, text)
                 text?.startsWith(START_COMMAND) == true -> onStartCommand(chatId)
                 text?.startsWith(ECHO_COMMAND) == true -> onEchoCommand(chatId, text)
             }
@@ -40,11 +43,23 @@ class BotController {
     } catch (e: UnirestException) {
         logger.log(Level.SEVERE, "Can not send START response!", e)
     }
+
     private fun onEchoCommand(chatId: Long, text: String) = try {
         val response = text.subSequence(ECHO_COMMAND.length, text.length).trim().toString()
         sendMessage(chatId, response)
     } catch (e: UnirestException) {
         logger.log(Level.SEVERE, "Can not send ECHO response!", e)
+    }
+
+    private fun onWaitCommand(chatId: Long, text: String) = try {
+        val textWithoutCommand = text.subSequence(WAIT_COMMAND.length, text.length).trim().toString()
+        val digits = textWithoutCommand.filter { c: Char -> c.isDigit() }
+        val quantity = digits.toLong()
+        sleep(quantity)
+        val response = "I've been waiting for " + digits + "seconds!"
+        sendMessage(chatId, response)
+    } catch (e: UnirestException) {
+        logger.log(Level.SEVERE, "Can not wait!", e)
     }
 
     @Throws(UnirestException::class)
