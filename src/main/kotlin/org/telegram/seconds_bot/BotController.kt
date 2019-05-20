@@ -53,22 +53,46 @@ class BotController {
 
     private fun onWaitCommand(chatId: Long, text: String) = try {
         val textWithoutCommand = text.subSequence(WAIT_COMMAND.length, text.length).trim().toString()
-        if (textWithoutCommand.all { c: Char -> c.isDigit().or(c.equals(":")) }.and(textWithoutCommand.isNotEmpty())){
-            val listOfTimes: List<Long> = text.split(":").map { s: String -> s.toLong() }
-            val secondsToWait: Long = 0
+        if (textWithoutCommand.all { c: Char -> c.isDigit().or(c == ':') }.and(textWithoutCommand.isNotEmpty())){
+            val listOfTimes: List<Long> = textWithoutCommand.split(":").map { s: String -> s.toLong() }
+            var secondsToWait: Long = 0
             if (listOfTimes.size == 3) {
-                secondsToWait.plus(listOfTimes.get(0)) * 3600 * 1000
-                secondsToWait.plus(listOfTimes.get(1)) * 60 * 1000
-                secondsToWait.plus(listOfTimes.get(2)) * 1000
+                val h = listOfTimes.get(0)
+                val m = listOfTimes.get(1)
+                val s = listOfTimes.get(2)
+                if (h >= 0 && h < 24
+                        && m >= 0 && m < 60
+                        && s >= 0 && s < 60){
+                    secondsToWait += listOfTimes.get(0) * 3600 * 1000
+                    secondsToWait += listOfTimes.get(1) * 60 * 1000
+                    secondsToWait += listOfTimes.get(2) * 1000
+                    sleep(secondsToWait)
+                    val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                    sendMessage(chatId, response)
+                } else {
+                    val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
+                    sendMessage(chatId, response)
+                }
             } else if (listOfTimes.size == 2){
-                secondsToWait.plus(listOfTimes.get(0)) * 60 * 1000
-                secondsToWait.plus(listOfTimes.get(1)) * 1000
+                val m = listOfTimes.get(0)
+                val s = listOfTimes.get(1)
+                if (m >= 0 && m < 60
+                        && s >= 0 && s < 60){
+                    secondsToWait += listOfTimes.get(0) * 60 * 1000
+                    secondsToWait += listOfTimes.get(1) * 1000
+                    sleep(secondsToWait)
+                    val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                    sendMessage(chatId, response)
+                } else {
+                    val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
+                    sendMessage(chatId, response)
+                }
             } else {
-                secondsToWait.plus(listOfTimes.get(0)) * 1000
+                secondsToWait +=listOfTimes.get(0) * 1000
+                sleep(secondsToWait)
+                val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                sendMessage(chatId, response)
             }
-            sleep(secondsToWait)
-            val response = "I've been waiting for " + secondsToWait + " seconds!"
-            sendMessage(chatId, response)
         } else {
             val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
             sendMessage(chatId, response)
