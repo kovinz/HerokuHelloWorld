@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.lang.Thread.sleep
 import java.util.logging.Level
 import java.util.logging.Logger
+import kotlin.concurrent.schedule
 
 
 @RestController
@@ -66,7 +67,7 @@ class BotController {
                     secondsToWait += listOfTimes.get(0) * 3600 * 1000
                     secondsToWait += listOfTimes.get(1) * 60 * 1000
                     secondsToWait += listOfTimes.get(2) * 1000
-                    sleep(secondsToWait)
+//                    sleep(secondsToWait)
                     val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
                     sendMessage(chatId, response)
                 } else {
@@ -80,7 +81,7 @@ class BotController {
                         && s >= 0 && s < 60){
                     secondsToWait += listOfTimes.get(0) * 60 * 1000
                     secondsToWait += listOfTimes.get(1) * 1000
-                    sleep(secondsToWait)
+//                    sleep(secondsToWait)
                     val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
                     sendMessage(chatId, response)
                 } else {
@@ -89,7 +90,7 @@ class BotController {
                 }
             } else {
                 secondsToWait +=listOfTimes.get(0) * 1000
-                sleep(secondsToWait)
+//                sleep(secondsToWait)
                 val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
                 sendMessage(chatId, response)
             }
