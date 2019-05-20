@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import java.lang.Thread.sleep
+import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.concurrent.schedule
@@ -40,7 +41,7 @@ class BotController {
     }
 
     private fun onStartCommand(chatId: Long) = try {
-        sendMessage(chatId, "Hello! I'm EchoBot.")
+        sendMessage(chatId, "Hello! I'm Seconds Waiting Bot.")
     } catch (e: UnirestException) {
         logger.log(Level.SEVERE, "Can not send START response!", e)
     }
@@ -67,9 +68,12 @@ class BotController {
                     secondsToWait += listOfTimes.get(0) * 3600 * 1000
                     secondsToWait += listOfTimes.get(1) * 60 * 1000
                     secondsToWait += listOfTimes.get(2) * 1000
-//                    sleep(secondsToWait)
-                    val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
-                    sendMessage(chatId, response)
+                    val acceptingResponse = "I will wait for " + secondsToWait / 1000 + " seconds!"
+                    sendMessage(chatId, acceptingResponse)
+                    Timer("timer", false).schedule(secondsToWait) {
+                        val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                        sendMessage(chatId, response)
+                    }
                 } else {
                     val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
                     sendMessage(chatId, response)
@@ -82,8 +86,12 @@ class BotController {
                     secondsToWait += listOfTimes.get(0) * 60 * 1000
                     secondsToWait += listOfTimes.get(1) * 1000
 //                    sleep(secondsToWait)
-                    val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
-                    sendMessage(chatId, response)
+                    val acceptingResponse = "I will wait for " + secondsToWait / 1000 + " seconds!"
+                    sendMessage(chatId, acceptingResponse)
+                    Timer("timer", false).schedule(secondsToWait) {
+                        val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                        sendMessage(chatId, response)
+                    }
                 } else {
                     val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
                     sendMessage(chatId, response)
@@ -91,8 +99,12 @@ class BotController {
             } else {
                 secondsToWait +=listOfTimes.get(0) * 1000
 //                sleep(secondsToWait)
-                val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
-                sendMessage(chatId, response)
+                val acceptingResponse = "I will wait for " + secondsToWait / 1000 + " seconds!"
+                sendMessage(chatId, acceptingResponse)
+                Timer("timer", false).schedule(secondsToWait) {
+                    val response = "I've been waiting for " + secondsToWait / 1000 + " seconds!"
+                    sendMessage(chatId, response)
+                }
             }
         } else {
             val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
