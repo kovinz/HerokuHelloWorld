@@ -166,7 +166,7 @@ class BotController {
      * bot sends message of finishing of waiting
      */
     private fun finishWaiting(chatId: Long, secondsToWait: Long) {
-        Timer("timer", false).schedule(secondsToWait) {
+        Timer("timer", false).schedule(secondsToWait * 1000) {
             val response = "I've been waiting for " + secondsToWait + " seconds!"
             sendMessage(chatId, response)
         }
@@ -177,7 +177,8 @@ class BotController {
      * bot sends message with denial of waiting
      */
     private fun denyWaiting(chatId: Long) {
-        val response = "Wrong format of time. You should use hh:mm:ss or just quantity of seconds I should wait"
+        val response = "Wrong format of time. You should use hh:mm:ss (hh in range 0..23, mm in range 0..59, ss in range 0..59)" +
+                " or just quantity of seconds I should wait in range 0..oo"
         sendMessage(chatId, response)
     }
 }
