@@ -107,7 +107,7 @@ class BotController {
      *
      * returns amount of seconds or -1 if format is not correct
      */
-    private fun countSeconds(listOfTimes: List<Long>): Long {
+    fun countSeconds(listOfTimes: List<Long>): Long {
         var secondsToWait: Long = 0
         var h: Long = 0
         var m: Long = 0
@@ -146,10 +146,10 @@ class BotController {
             return -1
         }
 
-        secondsToWait += h * 3600 * 1000
-        secondsToWait += m * 60 * 1000
-        secondsToWait += s * 1000
-        return secondsToWait / 1000
+        secondsToWait += h * 3600
+        secondsToWait += m * 60
+        secondsToWait += s
+        return secondsToWait
     }
 
 
@@ -178,7 +178,7 @@ class BotController {
      */
     private fun denyWaiting(chatId: Long) {
         val response = "Wrong format of time. You should use hh:mm:ss (hh in range 0..23, mm in range 0..59, ss in range 0..59)" +
-                " or just quantity of seconds I should wait in range 0..oo"
+                " or just quantity of seconds in range 0..oo"
         sendMessage(chatId, response)
     }
 }
